@@ -1,0 +1,70 @@
+<% include partes/_headers %>
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-7">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Legajo</th>
+                        <th>Apellido</th>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Sector</th>
+                        <th>Fecha Ingreso</th>
+                        <th>Activo</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (data) { %>
+                        <% for (var i = 0; i< data.length; i++ ){ %>
+                            <tr>
+                                <td><%= (i+1)%></td>
+                                <td><%= data[i].legajo></td>
+                                <td><%= data[i].apellido%></td>
+                                <td><%= data[i].nombre %></td>
+                                <td><%= data[i].dni %></td>
+                                <td><%= data[i].Sector %></td>
+                                <td><%= data[i].Fecha %></td>
+                                <td><%= data[i].Activo %></td>
+                                <td>
+                                    <a href="/delete/<%= data[i].legajo %>" class="btn btn-danger">Eliminar</a>
+                                </td>
+                            </tr>
+                        <% } %> 
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-5">
+            <form action="/add" method="post">
+
+                <div class="form-group">
+                    <input type="text" name="apellido"placeholder="Apellido" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="nombre"  placeholder="Nombre" class="form-control" autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="dni" placeholder="Dni" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="nombre"  placeholder="Nombre" class="form-control" autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="Sector"  placeholder="Sector" class="form-control" autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="Fecha"  placeholder="Fecha" class="form-control" autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="Activo"  placeholder="Activo" class="form-control" autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<% include partes/_footer %>
