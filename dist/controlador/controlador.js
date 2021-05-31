@@ -1,25 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEmpleados = exports.updateEmpleados = exports.insertEmpleados = exports.getEmpleadosXID = exports.getEmpleados = void 0;
 const mysqldb_1 = require("../mysqldb");
-const getEmpleados = (req, res) => new Promise((resolve, reject) => {
+exports.getEmpleados = (req, res) => new Promise((resolve, reject) => {
     mysqldb_1.cxMysql.getConnection((err, connection) => {
         if (err) {
             console.error(err);
             res.send(err);
             return;
         }
-        console.log('MySQL Connection: ', connection.threadId);
-        connection.query('SELECT * FROM empleado limit 10', (err, results) => {
+        console.log("MySQL Connection: ", connection.threadId);
+        connection.query("SELECT * FROM empleado limit 10", (err, empleado) => {
             if (err)
                 console.error(err);
             //console.log('User Query Results: ', results);
-            res.send(results);
+            res.render("results", {
+                data: empleado,
+            });
         });
     });
 });
-exports.getEmpleados = getEmpleados;
-const getEmpleadosXID = (req, res) => new Promise((resolve, reject) => {
+exports.getEmpleadosXID = (req, res) => new Promise((resolve, reject) => {
     const id = parseInt(req.params.legajo);
     mysqldb_1.cxMysql.getConnection((err, connection) => {
         if (err) {
@@ -27,17 +27,16 @@ const getEmpleadosXID = (req, res) => new Promise((resolve, reject) => {
             res.send(err);
             return;
         }
-        connection.query('SELECT * FROM empleado WHERE legajo = ?', [id], (err, results) => {
+        connection.query(`Select * from empleado where legajo = '${id}'`, (err, results) => {
             if (err)
                 console.error(err);
             res.send(results);
         });
     });
 });
-exports.getEmpleadosXID = getEmpleadosXID;
-const insertEmpleados = (req, res) => new Promise((resolve, reject) => {
-    const {legajo, apellido, nombre, dni, sector,fechaIngreso,activo} = req.body;
-    var values = [legajo, apellido, nombre, dni, sector,fechaIngreso,activo];
+exports.insertEmpleados = (req, res) => new Promise((resolve, reject) => {
+    const { legajo, apellido, nombre, dni, sector, fechaIngreso, activo } = req.body;
+    var values = [legajo, apellido, nombre, dni, sector, fechaIngreso, activo];
     mysqldb_1.cxMysql.getConnection((err, connection) => {
         if (err) {
             console.error(err);
@@ -45,7 +44,7 @@ const insertEmpleados = (req, res) => new Promise((resolve, reject) => {
             return;
         }
         else {
-            let sql = 'INSERT INTO empleado(legajo, apellido, nombre, dni, sector,fechaIngreso,activo) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            let sql = "INSERT INTO empleado(legajo, apellido, nombre, dni, sector,fechaIngreso,activo) VALUES (?, ?, ?, ?, ?, ?, ?)";
             connection.query(sql, values, (err, results) => {
                 if (err) {
                     console.error(err);
@@ -58,10 +57,9 @@ const insertEmpleados = (req, res) => new Promise((resolve, reject) => {
         }
     });
 });
-exports.insertEmpleados = insertEmpleados;
-const updateEmpleados = (req, res) => new Promise((resolve, reject) => {
-    const {legajo, apellido, nombre, dni, sector,fechaIngreso,activo} = req.body;
-    var values = [apellido, nombre, dni, sector,fechaIngreso,activo,legajo];
+exports.updateEmpleados = (req, res) => new Promise((resolve, reject) => {
+    const { legajo, apellido, nombre, dni, sector, fechaIngreso, activo } = req.body;
+    var values = [apellido, nombre, dni, sector, fechaIngreso, activo, legajo];
     mysqldb_1.cxMysql.getConnection((err, connection) => {
         if (err) {
             console.error(err);
@@ -69,7 +67,7 @@ const updateEmpleados = (req, res) => new Promise((resolve, reject) => {
             return;
         }
         else {
-            let sql = 'UPDATE empleado SET apellido=?, nombre=?, dni=?, sector=?, fechaIngreso=?,activo=? WHERE legajo=?';
+            let sql = `UPDATE empleado SET apellido=?, nombre=?, dni=?, sector=?, fechaIngreso=?,activo=? WHERE legajo=${req.params.legajo}`;
             connection.query(sql, values, (err, results) => {
                 if (err) {
                     console.error(err);
@@ -82,8 +80,7 @@ const updateEmpleados = (req, res) => new Promise((resolve, reject) => {
         }
     });
 });
-exports.updateEmpleados = updateEmpleados;
-const eliminarEmpleados = (req, res) => new Promise((resolve, reject) => {
+exports.deleteEmpleados = (req, res) => new Promise((resolve, reject) => {
     const id = parseInt(req.params.legajo);
     mysqldb_1.cxMysql.getConnection((err, connection) => {
         if (err) {
@@ -91,7 +88,7 @@ const eliminarEmpleados = (req, res) => new Promise((resolve, reject) => {
             res.send(err);
             return;
         }
-        connection.query('DELETE FROM empleado WHERE legajo = ?', [id], (err, results) => {
+        connection.query("DELETE FROM empleado WHERE legajo = ?", [id], (err, results) => {
             if (err) {
                 console.error(err);
                 res.json({ message: "Error al tratar de Eliminar" });
@@ -102,4 +99,3 @@ const eliminarEmpleados = (req, res) => new Promise((resolve, reject) => {
         });
     });
 });
-exports.eliminarEmpleados = eliminarEmpleados;
